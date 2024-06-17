@@ -174,15 +174,9 @@ function M.aerial_available() return package.loaded["aerial"] end
 function M.lsp_attached(bufnr)
   if type(bufnr) == "table" then bufnr = bufnr.bufnr end
   if not bufnr then bufnr = 0 end
-  return (
-        -- HACK: Check for lsp utilities loaded first, get_active_clients seems to have a bug if called too early (tokyonight colorscheme seems to be a good way to expose this for some reason)
-package.loaded["astrolsp"]
-    -- TODO: remove get_active_clients when dropping support for Neovim 0.9
-    ---@diagnostic disable-next-line: deprecated
-    and next((vim.lsp.get_clients or vim.lsp.get_active_clients) { bufnr = bufnr }) ~= nil
-  )
-    or (package.loaded["conform"] and next(require("conform").list_formatters(bufnr)) ~= nil)
-    or (package.loaded["lint"] and next(require("lint")._resolve_linter_by_ft(vim.bo[bufnr].filetype or "")) ~= nil)
+  return (next((vim.lsp.get_clients) { bufnr = bufnr }) ~= nil)
+      or (package.loaded["conform"] and next(require("conform").list_formatters(bufnr)) ~= nil)
+      or (package.loaded["lint"] and next(require("lint")._resolve_linter_by_ft(vim.bo[bufnr].filetype or "")) ~= nil)
 end
 
 --- A condition function if a treesitter parser for a given buffer is available

@@ -301,7 +301,7 @@ function M.lsp(opts)
       padding = { right = 1 },
       update = {
         "User",
-        pattern = "AstroLspProgress",
+        pattern = { "LspProgressUpdate", "LspRequest" },
         callback = function() vim.schedule(vim.cmd.redrawstatus) end,
       },
     },
@@ -334,7 +334,7 @@ function M.lsp(opts)
             status_utils.build_provider(p_opts, provider[p](p_opts)),
             status_utils.build_provider(p_opts, provider.str(p_opts)),
           }
-        or false
+          or false
     end
   ))
 end
@@ -440,10 +440,10 @@ function M.builder(opts)
   end
   for key, entry in pairs(opts) do
     if
-      type(key) == "number"
-      and type(entry) == "table"
-      and provider[entry.provider]
-      and (entry.opts == nil or type(entry.opts) == "table")
+        type(key) == "number"
+        and type(entry) == "table"
+        and provider[entry.provider]
+        and (entry.opts == nil or type(entry.opts) == "table")
     then
       entry.provider = provider[entry.provider](entry.opts)
     end
@@ -461,7 +461,7 @@ function M.builder(opts)
         opts.surround.condition,
         opts.surround.update
       )
-    or children
+      or children
 end
 
 return M
